@@ -1,0 +1,9 @@
+# Local caches
+build
+.cache
+.vscode
+
+# Local configs
+.test_local
+CMakeUserPresets.json
+
