@@ -17,16 +17,16 @@ enum class MenuPosition {
 
 class Window : public Gtk::Window {
 private:
-  int x, y;
-  float w, h;
-  int grid_row, grid_col;
+  MenuPosition anchor;
+  int xm, ym, width, height, col_gap, row_gap;
 
   Window *parent;
-  Gtk::Grid grid;
+
+  void setup_anchoring();
 
 public:
-  Window(MenuPosition anchor, int x_margin, int y_margin, float width,
-         float height, int row, int col);
+  Window(MenuPosition anchor, int x_margin, int y_margin, int width, int height,
+         int col_gap, int row_gap);
   ~Window() override = default;
 };
 

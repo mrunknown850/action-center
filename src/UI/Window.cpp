@@ -1,57 +1,55 @@
 #include "UI/Window.hpp"
+#include "glibmm/refptr.h"
 #include <gtk-layer-shell/gtk-layer-shell.h>
-#include <iostream>
+#include <gtkmm/gridlayout.h>
+#include <gtkmm/object.h>
 
-Window::Window(MenuPosition anchor, int x_margin, int y_margin, float width,
-               float height, int row, int col)
-    : w(width), h(height), grid_row(row), grid_col(col), parent(nullptr)
-{
+void Window::setup_anchoring() {
+  if (anchor == MenuPosition::TOP || anchor == MenuPosition::TOP_LEFT ||
+      anchor == MenuPosition::TOP_RIGHT) {
+    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_TOP, true);
+    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_TOP, ym);
+  }
+
+  // BOTTOM SETUP
+  if (anchor == MenuPosition::BOTTOM || anchor == MenuPosition::BOTTOM_LEFT ||
+      anchor == MenuPosition::BOTTOM_RIGHT) {
+    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_BOTTOM, true);
+    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_BOTTOM, ym);
+  }
+
+  // RIGHT SETUP
+  if (anchor == MenuPosition::RIGHT || anchor == MenuPosition::BOTTOM_RIGHT ||
+      anchor == MenuPosition::TOP_RIGHT) {
+    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_RIGHT, true);
+    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_RIGHT, xm);
+  }
+
+  // LEFT SETUP
+  if (anchor == MenuPosition::LEFT || anchor == MenuPosition::BOTTOM_LEFT ||
+      anchor == MenuPosition::TOP_LEFT) {
+    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_LEFT, true);
+    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_LEFT, xm);
+  }
+}
+
+Window::Window(MenuPosition anchor, int x_margin, int y_margin, int width,
+               int height, int col_gap, int row_gap)
+    : anchor(anchor), xm(x_margin), ym(y_margin), width(width), height(height),
+      parent(nullptr), col_gap(col_gap), row_gap(row_gap) {
   // Setup popup
   set_decorated(false);
   set_hide_on_close(true);
   set_resizable(false);
 
-  set_default_size(w, h);
-
+  set_default_size(width, height);
   gtk_layer_init_for_window(this->gobj());
+  setup_anchoring();
 
-  // TOP SETUP
-  if (anchor == MenuPosition::TOP || anchor == MenuPosition::TOP_LEFT ||
-      anchor == MenuPosition::TOP_RIGHT)
-  {
-    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_TOP, true);
-    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_TOP, y_margin);
-    std::cout << "TOP";
-  }
-
-  // BOTTOM SETUP
-  if (anchor == MenuPosition::BOTTOM || anchor == MenuPosition::BOTTOM_LEFT ||
-      anchor == MenuPosition::BOTTOM_RIGHT)
-  {
-    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_BOTTOM, true);
-    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_BOTTOM, y_margin);
-    std::cout << "BOTTOM";
-  }
-
-  // RIGHT SETUP
-  if (anchor == MenuPosition::RIGHT || anchor == MenuPosition::BOTTOM_RIGHT ||
-      anchor == MenuPosition::TOP_RIGHT)
-  {
-    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_RIGHT, true);
-    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_RIGHT, x_margin);
-    std::cout << "RIGHT";
-  }
-
-  // LEFT SETUP
-  if (anchor == MenuPosition::LEFT || anchor == MenuPosition::BOTTOM_LEFT ||
-      anchor == MenuPosition::TOP_LEFT)
-  {
-    gtk_layer_set_anchor(this->gobj(), GTK_LAYER_SHELL_EDGE_LEFT, true);
-    gtk_layer_set_margin(this->gobj(), GTK_LAYER_SHELL_EDGE_LEFT, x_margin);
-    std::cout << "LEFT";
-  }
-
-  std::cout << std::endl;
-
+  // Setup grid
+  auto layout = Gtk::GridLayout::create();
+  layout->set_column_spacing(col_gap);
+  layout->set_row_spacing(row_gap);
+  set_layout_manager(layout);
   show();
 }

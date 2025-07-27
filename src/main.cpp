@@ -1,23 +1,18 @@
 #include "UI/Window.hpp"
 #include <gtkmm/application.h>
-#include <iostream>
-#include <string>
 
-class ActionBar : public Gtk::Application
-{
+class ActionBar : public Gtk::Application {
 public:
   ActionBar() : Gtk::Application("org.example.ActionBar") {}
 
 protected:
-  void on_activate() override
-  {
-    auto win = new Window(static_cast<MenuPosition>(5), 100, 100, 300, 300, 5, 5);
+  void on_activate() override {
+    auto win = new Window(static_cast<MenuPosition>(5), 10, 10, 300, 300, 5, 5);
     add_window(*win);
   }
 };
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   auto app = new ActionBar();
   return app->run(argc, argv);
 }
