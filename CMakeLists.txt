@@ -9,10 +9,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-4.0)
 
 include_directories(
-  include/Config
-  include/Plugin
-  include/UI
-  include
+ include
 )
 
 file(GLOB_RECURSE APP_SRC
@@ -27,7 +24,7 @@ add_executable(ac ${APP_SRC})
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-4.0)
 
-# Include GTKmm include dirs
+# Include GTKmm include dirs (system)
 target_include_directories(ac PRIVATE ${GTKMM_INCLUDE_DIRS})
 target_link_directories(ac PRIVATE ${GTKMM_LIBRARY_DIRS})
 target_link_libraries(ac PRIVATE ${GTKMM_LIBRARIES})

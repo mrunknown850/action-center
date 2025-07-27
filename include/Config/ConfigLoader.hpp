@@ -5,13 +5,6 @@
 #include <json/value.h>
 #include <unordered_map>
 
-struct GeneralInfo {
-  float x, y, w, h;
-  int row_count, col_count;
-
-  std::vector<std::string> component_ids;
-};
-
 struct ComponentInfo {
   std::string format;
   Json::Value raw;
@@ -19,8 +12,11 @@ struct ComponentInfo {
 
 class Config {
 private:
+  float x, y, w, h;
+  int row_count, col_count;
+  std::vector<std::string> component_ids;
+
   Json::Value root;
-  GeneralInfo general_config;
   std::unordered_map<std::string, ComponentInfo> components_config;
 
   void parse_components();
