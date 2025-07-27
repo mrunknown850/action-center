@@ -4,10 +4,15 @@ project(ActionCenter)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig:/usr/share/pkgconfig")
 
+# Finding packages
+find_package(jsoncpp CONFIG REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-4.0)
+pkg_check_modules(GTKLAYER REQUIRED gtk4-layer-shell-0)
 
+# Builds
 include_directories(
  include
 )
@@ -21,17 +26,17 @@ file(GLOB_RECURSE APP_SRC
 
 add_executable(ac ${APP_SRC})
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTKMM REQUIRED gtkmm-4.0)
+# Linker
+# Gtk-layer-shell (system)
+target_include_directories(ac PRIVATE ${GTKLAYER_INCLUDE_DIRS})
+target_link_directories(ac PRIVATE ${GTKLAYER_LIBRARY_DIRS})
+target_link_libraries(ac PRIVATE ${GTKLAYER_LIBRARIES})
 
-# Include GTKmm include dirs (system)
+# GTKmm (system)
 target_include_directories(ac PRIVATE ${GTKMM_INCLUDE_DIRS})
 target_link_directories(ac PRIVATE ${GTKMM_LIBRARY_DIRS})
 target_link_libraries(ac PRIVATE ${GTKMM_LIBRARIES})
 
-# Link JSONCPP via vcpkg
-find_package(jsoncpp CONFIG REQUIRED)
+# JSONCPP (vcpkg)
 target_link_libraries(ac PRIVATE jsoncpp)
 
-# Optionally define include dirs (vcpkg sets them automatically for jsoncpp)
-# target_include_directories(ac PRIVATE ...
