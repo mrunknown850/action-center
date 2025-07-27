@@ -1,6 +1,7 @@
 #ifndef CONFIG_LOADER_HPP
 #define CONFIG_LOADER_HPP
 
+#include "UI/Window.hpp"
 #include <json/json.h>
 #include <json/value.h>
 #include <unordered_map>
@@ -12,8 +13,8 @@ struct ComponentInfo {
 
 class Config {
 private:
-  float x, y, w, h;
-  int row_count, col_count;
+  MenuPosition anchor;
+  int x_margin, y_margin, width, height, col_gap, row_gap;
   std::vector<std::string> component_ids;
 
   Json::Value root;
@@ -23,13 +24,13 @@ private:
 
 public:
   Config(const std::string &path);
+  std::pair<int, int> get_margin() const;
+  std::pair<int, int> get_size() const;
+  std::pair<int, int> get_gap() const;
+  MenuPosition get_anchor() const;
   const std::unordered_map<std::string, ComponentInfo> &
   get_components_config() const;
-
-  std::pair<float, float> get_position() const;
-  std::pair<float, float> get_size() const;
-  std::pair<int, int> get_layout() const;
-  std::span<const std::string> get_components_id() const;
+  const std::vector<std::string> &get_components_id() const;
 };
 
 #endif // !CONFIG_LOADER_HPP

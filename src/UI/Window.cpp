@@ -33,10 +33,13 @@ void Window::setup_anchoring() {
   }
 }
 
+#include <iostream>
+
 Window::Window(MenuPosition anchor, int x_margin, int y_margin, int width,
                int height, int col_gap, int row_gap)
     : anchor(anchor), xm(x_margin), ym(y_margin), width(width), height(height),
       parent(nullptr), col_gap(col_gap), row_gap(row_gap) {
+  std::cout << "Setting up variables" << std::endl;
   // Setup popup
   set_decorated(false);
   set_hide_on_close(true);
@@ -47,9 +50,12 @@ Window::Window(MenuPosition anchor, int x_margin, int y_margin, int width,
   setup_anchoring();
 
   // Setup grid
+  std::cout << "Setting up grids" << std::endl;
   auto layout = Gtk::GridLayout::create();
   layout->set_column_spacing(col_gap);
   layout->set_row_spacing(row_gap);
   set_layout_manager(layout);
+
+  std::cout << "Finished config window" << std::endl;
   show();
 }

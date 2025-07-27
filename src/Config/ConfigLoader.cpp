@@ -1,7 +1,7 @@
 #include "Config/ConfigLoader.hpp"
+#include "UI/Window.hpp"
 #include <fstream>
 #include <json/reader.h>
-#include <span>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -15,13 +15,7 @@ std::vector<std::string> parse_list(const Json::Value &arr) {
   return res;
 }
 
-std::pair<float, float> parse_float_pair(const Json::Value &arr) {
-  if (!arr.isArray() || arr.size() != 2)
-    throw std::runtime_error("Expected array of 2 elements");
-  return {arr[0].asFloat(), arr[1].asFloat()};
-}
-
-std::pair<int, int> parse_int_pair(const Json::Value &arr) {
+std::pair<int, int> parse_pair(const Json::Value &arr) {
   if (!arr.isArray() || arr.size() != 2)
     throw std::runtime_error("Expected array of 2 elements");
   return {arr[0].asInt(), arr[1].asInt()};
@@ -32,14 +26,10 @@ Config::get_components_config() const {
   return components_config;
 }
 
-std::pair<float, float> Config::get_position() const { return {x, y}; }
-std::pair<float, float> Config::get_size() const { return {w, h}; }
-std::pair<int, int> Config::get_layout() const {
-  return {row_count, col_count};
-}
-std::span<const std::string> Config::get_components_id() const {
-  return std::span<const std::string>(component_ids);
-}
+std::pair<int, int> Config::get_margin() const { return {x_margin, y_margin}; }
+std::pair<int, int> Config::get_size() const { return {width, height}; }
+std::pair<int, int> Config::get_gap() const { return {row_gap, col_gap}; }
+MenuPosition Config::get_anchor() const { return anchor; }
 
 Config::Config(const std::string &path) {
   // Setup stream
@@ -57,15 +47,35 @@ Config::Config(const std::string &path) {
 
 void Config::parse_components() {
   // Setting up global configs
-  std::pair<float, float> xy = parse_float_pair(root["position"]);
-  std::pair<float, float> wh = parse_float_pair(root["size"]);
-  std::pair<int, int> cells = parse_int_pair(root["cells"]);
-  x = xy.first;
-  y = xy.second;
-  w = wh.first;
-  h = wh.second;
-  row_count = cells.first;
-  col_count = cells.second;
+  auto margin_pair = parse_pair(root["margin"]);
+  x_margin = margin_pair.first;
+  y_margin = margin_pair.second;
+  auto size_pair = parse_pair(root["size"]);
+  width = size_pair.first;
+  height = size_pair.second;
+  auto gap_pair = parse_pair(root["gaps"]);
+  row_gap = gap_pair.first;
+  col_gap = gap_pair.second;
+
+  // Get anchor
+  auto anchor_str = root["anchor"].asString();
+  if (anchor_str == "TOP")
+    anchor = MenuPosition::TOP;
+  else if (anchor_str == "LEFT")
+    anchor = MenuPosition::LEFT;
+  else if (anchor_str == "RIGHT")
+    anchor = MenuPosition::RIGHT;
+  else if (anchor_str == "BOTTOM")
+    anchor = MenuPosition::BOTTOM;
+  else if (anchor_str == "TOP_LEFT")
+    anchor = MenuPosition::TOP_LEFT;
+  else if (anchor_str == "TOP_RIGHT")
+    anchor = MenuPosition::TOP_RIGHT;
+  else if (anchor_str == "BOTTOM_LEFT")
+    anchor = MenuPosition::BOTTOM_LEFT;
+  else if (anchor_str == "BOTTOM_RIGHT")
+    anchor = MenuPosition::BOTTOM_RIGHT;
+
   component_ids = parse_list(root["modules"]);
 
   for (const std::string &id : component_ids) {
