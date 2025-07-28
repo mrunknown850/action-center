@@ -1,14 +1,18 @@
 #ifndef CONFIG_LOADER_HPP
 #define CONFIG_LOADER_HPP
 
-#include "UI/Window.hpp"
+// #include "UI/Window.hpp"
 #include <json/json.h>
 #include <json/value.h>
 #include <unordered_map>
 
+enum class MenuPosition;
 struct ComponentInfo {
-  std::string format;
-  Json::Value raw;
+  std::pair<int, int> grid_column; // Follows CSS grid format
+  std::pair<int, int> grid_row;    // Follows CSS grid format
+  std::string module_id = "";      // ID for multiple instance of one mod
+  std::string format;              // Default label
+  Json::Value raw;                 // Raw config
 };
 
 class Config {

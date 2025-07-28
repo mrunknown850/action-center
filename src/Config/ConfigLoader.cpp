@@ -26,6 +26,10 @@ Config::get_components_config() const {
   return components_config;
 }
 
+const std::vector<std::string> &Config::get_components_id() const {
+  return component_ids;
+}
+
 std::pair<int, int> Config::get_margin() const { return {x_margin, y_margin}; }
 std::pair<int, int> Config::get_size() const { return {width, height}; }
 std::pair<int, int> Config::get_gap() const { return {row_gap, col_gap}; }
@@ -84,6 +88,9 @@ void Config::parse_components() {
     ComponentInfo conf;
     conf.raw = root[id];
     conf.format = conf.raw["format"].asString();
+    conf.grid_row = parse_pair(conf.raw["grid-row"]);
+    conf.grid_column = parse_pair(conf.raw["grid-column"]);
+
     components_config[id] = conf;
   }
 }

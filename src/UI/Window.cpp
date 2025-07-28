@@ -1,8 +1,9 @@
 #include "UI/Window.hpp"
-#include "glibmm/refptr.h"
+#include "Config/ConfigLoader.hpp"
+#include <glibmm/refptr.h>
 #include <gtk-layer-shell/gtk-layer-shell.h>
-#include <gtkmm/gridlayout.h>
 #include <gtkmm/object.h>
+#include <memory>
 
 void Window::setup_anchoring() {
   if (anchor == MenuPosition::TOP || anchor == MenuPosition::TOP_LEFT ||
@@ -51,11 +52,21 @@ Window::Window(MenuPosition anchor, int x_margin, int y_margin, int width,
 
   // Setup grid
   std::cout << "Setting up grids" << std::endl;
-  auto layout = Gtk::GridLayout::create();
-  layout->set_column_spacing(col_gap);
-  layout->set_row_spacing(row_gap);
-  set_layout_manager(layout);
+  root.set_column_spacing(col_gap);
+  root.set_row_spacing(row_gap);
+  set_child(root);
 
   std::cout << "Finished config window" << std::endl;
   show();
+}
+
+void Window::add_component(std::unique_ptr<Component> comp) {
+  const ComponentInfo &config = comp->get_config();
+  int width = config.grid_column.second - config.grid_column.first;
+  int height = config.grid_row.second - config.grid_row.first;
+  // Ensure at least 1
+  if (width <= 0) width = 1;
+  if (height <= 0) height = 1;
+  root.attach(comp->get_widget(), config.grid_column.first,
+              config.grid_row.first, width, height);
 }
