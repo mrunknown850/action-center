@@ -54,6 +54,7 @@ Window::Window(MenuPosition anchor, int x_margin, int y_margin, int width,
   std::cout << "Setting up grids" << std::endl;
   root.set_column_spacing(col_gap);
   root.set_row_spacing(row_gap);
+  root.set_column_homogeneous(true);
   set_child(root);
 
   std::cout << "Finished config window" << std::endl;
@@ -65,8 +66,10 @@ void Window::add_component(std::unique_ptr<Component> comp) {
   int width = config.grid_column.second - config.grid_column.first;
   int height = config.grid_row.second - config.grid_row.first;
   // Ensure at least 1
-  if (width <= 0) width = 1;
-  if (height <= 0) height = 1;
+  if (width <= 0)
+    width = 1;
+  if (height <= 0)
+    height = 1;
   root.attach(comp->get_widget(), config.grid_column.first,
               config.grid_row.first, width, height);
 }

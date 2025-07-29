@@ -1,8 +1,8 @@
 #include "Config/ConfigLoader.hpp"
 #include "UI/ButtonModule.hpp"
-#include "UI/Component.hpp"
+#include "UI/SliderModule.hpp"
+#include "UI/ToggleModule.hpp"
 #include "UI/Window.hpp"
-#include "gtkmm/button.h"
 #include <gtkmm/application.h>
 #include <iostream>
 
@@ -30,9 +30,25 @@ protected:
     const std::unordered_map<std::string, ComponentInfo> &mod_configs =
         config.get_components_config();
     for (std::string widget_id : config.get_components_id()) {
-      auto btn = std::make_unique<ButtonModule>(
-          widget_id, ComponentType::BUTTON, mod_configs.at(widget_id));
-      win->add_component(std::move(btn));
+      std::string type = mod_configs.at(widget_id).raw["type"].asString();
+      if (type == "BUTTON") {
+        std::cout << "Created btn: " << widget_id << std::endl;
+        auto btn = std::make_unique<ButtonModule>(widget_id,
+                                                  mod_configs.at(widget_id));
+        win->add_component(std::move(btn));
+      } else if (type == "TOGGLE") {
+
+        std::cout << "Created toggle: " << widget_id << std::endl;
+        auto tog = std::make_unique<ToggleModule>(widget_id,
+                                                  mod_configs.at(widget_id));
+        win->add_component(std::move(tog));
+      } else if (type == "SLIDER") {
+
+        std::cout << "Created slider: " << widget_id << std::endl;
+        auto sli = std::make_unique<SliderModule>(widget_id,
+                                                  mod_configs.at(widget_id));
+        win->add_component(std::move(sli));
+      }
     }
 
     std::cout << "Adding windows to app" << std::endl;
