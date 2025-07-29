@@ -1,7 +1,7 @@
 #include "UI/Window.hpp"
 #include "Config/ConfigLoader.hpp"
 #include <glibmm/refptr.h>
-#include <gtk-layer-shell/gtk-layer-shell.h>
+#include <gtk4-layer-shell.h>
 #include <gtkmm/object.h>
 #include <memory>
 
