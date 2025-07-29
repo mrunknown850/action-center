@@ -1,6 +1,5 @@
 {
-  "name": "org.mrunknown850.action-menu",
-  "version": "0.01",
-  "dependencies": ["jsoncpp"],
-  "builtin-baseline": "..."
+  "name": "mrunknown850action-menu",
+  "version": "0.1",
+  "dependencies": ["jsoncpp"]
 }
