@@ -1,0 +1,40 @@
+# This starter workflow is for a CMake project running on multiple platforms. There is a different starter workflow if you just want a single platform.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
+name: CMake/CTest on Linux
+
+on: [ push, pull_request ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [ubuntu:rolling, debian:testing, fedora, archlinux]
+    container:
+      image: ${{ matrix.distro }}
+    steps:
+      - name: Install packages
+        run: |
+          case "${{ matrix.distro }}" in
+          ubuntu:rolling|debian:testing)
+            apt-get update && apt-get install -y build-essential cmake git libgtk4-layer-shell0 libgtk-4-1 libgtkmm-4.0-0 tar zip unzip curl ninja-build
+              ;;
+            fedora)
+              dnf install -y make gcc gcc-c++ cmake git gtk4 gtkmm4.0 tar zip unzip curl ninja-build
+              ;;
+            archlinux)
+              pacman -Syu --noconfirm base-devel cmake git gtk4 gtkmm-4.0 gtk4-layer-shell tar zip unzip curl ninja
+              ;;
+          esac
+      - name: Checkout repo (with vcpkg)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build project
+        run: |
+          cmake --preset linux-debug
+          cmake --build --preset linux-debug
+      - name: Run tests
+        run: |
+          ctest --output-on-failure --preset linux-debug 
+          
