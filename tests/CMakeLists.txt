@@ -1,5 +1,13 @@
 # ============== TESTINGS =============
-find_package(GTest REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE APP_TEST_SRC
   ${CMAKE_SOURCE_DIR}/Config/*.cpp
@@ -26,8 +34,8 @@ target_link_libraries(run_tests PRIVATE ${GTKMM_LIBRARIES})
 target_link_libraries(run_tests PRIVATE jsoncpp)
 
 # GTest
-target_link_libraries(run_tests PRIVATE GTest::gtest GTest::gtest_main)
-
+include(GoogleTest)
+target_link_libraries(run_tests PRIVATE GTest::gtest_main)
 gtest_discover_tests(
   run_tests
   PROPERTIES VERBOSE 1
