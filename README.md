@@ -3,7 +3,7 @@
 
 # Building from source
 ```bash
-$ git clone --recurse-submodules https://github.com/mrunknown850/action-center
+$ git clone https://github.com/mrunknown850/action-center
 $ cd action-center
 $ cmake --preset linux-debug
 $ cmake --build --preset linux-debug

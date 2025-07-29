@@ -31,7 +31,7 @@ target_link_directories(run_tests PRIVATE ${GTKMM_LIBRARY_DIRS})
 target_link_libraries(run_tests PRIVATE ${GTKMM_LIBRARIES})
 
 # JSONCPP (vcpkg)
-target_link_libraries(run_tests PRIVATE jsoncpp)
+target_link_libraries(run_tests PRIVATE ${JSONCPP_LIBRARIES})
 
 # GTest
 include(GoogleTest)

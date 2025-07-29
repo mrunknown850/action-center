@@ -10,10 +10,7 @@
       "name": "default",
       "hidden": true,
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/external/vcpkg/scripts/buildsystems/vcpkg.cmake"
-      }
+      "binaryDir": "${sourceDir}/build/${presetName}"
     },
     {
       "name": "linux-debug",

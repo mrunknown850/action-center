@@ -20,7 +20,7 @@ target_link_directories(action-center PRIVATE ${GTKMM_LIBRARY_DIRS})
 target_link_libraries(action-center PRIVATE ${GTKMM_LIBRARIES})
 
 # JSONCPP (vcpkg)
-target_link_libraries(action-center PRIVATE jsoncpp)
+target_link_libraries(action-center PRIVATE ${JSONCPP_LIBRARIES})
 
 # Others
 

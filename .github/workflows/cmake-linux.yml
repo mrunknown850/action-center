@@ -17,23 +17,17 @@ jobs:
         run: |
           case "${{ matrix.distro }}" in
           ubuntu:rolling|debian:testing)
-            apt-get update && apt-get install -y build-essential cmake git libgtk4-layer-shell-dev libgtk-4-dev libwayland-dev libgtkmm-4.0-dev libgtkmm-4.0-0 tar zip unzip curl ninja-build pkg-config
+            apt-get update && apt-get install -y build-essential cmake git libgtk4-layer-shell-dev libgtk-4-dev libwayland-dev libgtkmm-4.0-dev libgtkmm-4.0-0 tar zip unzip curl ninja-build pkg-config libjsoncpp-dev
               ;;
             fedora)
-              dnf install -y make gcc gcc-c++ cmake git gtk4 gtkmm4.0 gtkmm4.0-devel gtk4-layer-shell gtk4-layer-shell-devel tar zip unzip curl ninja-build pkgconf-pkg-config
+              dnf install -y make gcc gcc-c++ cmake git gtk4 gtkmm4.0 gtkmm4.0-devel gtk4-layer-shell gtk4-layer-shell-devel tar zip unzip curl ninja-build pkgconf-pkg-config jsoncpp-devel
               ;;
             archlinux)
-              pacman -Syu --noconfirm base-devel cmake git gtk4 gtkmm-4.0 gtk4-layer-shell tar zip unzip curl ninja pkgconf
+              pacman -Syu --noconfirm base-devel cmake git gtk4 gtkmm-4.0 gtk4-layer-shell tar zip unzip curl ninja pkgconf jsoncpp
               ;;
           esac
-      - name: gtk4-layer-shell check
-        run: pkg-config --cflags gtk4-layer-shell-0
-      - name: Ninja check
-        run: ninja --version
-      - name: Checkout repo (with vcpkg)
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - name: Build project
         run: |
           cmake --preset linux-debug
