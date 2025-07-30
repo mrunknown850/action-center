@@ -62,14 +62,14 @@ Window::Window(MenuPosition anchor, int x_margin, int y_margin, int width,
 }
 
 void Window::add_component(std::unique_ptr<Component> comp) {
-  const ComponentInfo &config = comp->get_config();
-  int width = config.grid_column.second - config.grid_column.first;
-  int height = config.grid_row.second - config.grid_row.first;
+  const ComponentInfo *config = comp->get_config();
+  int width = config->grid_col.end - config->grid_col.start;
+  int height = config->grid_row.end - config->grid_row.start;
   // Ensure at least 1
   if (width <= 0)
     width = 1;
   if (height <= 0)
     height = 1;
-  root.attach(comp->get_widget(), config.grid_column.first,
-              config.grid_row.first, width, height);
+  root.attach(comp->get_widget(), config->grid_col.start,
+              config->grid_row.start, width, height);
 }
