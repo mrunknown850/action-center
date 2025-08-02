@@ -9,10 +9,12 @@ protected:
   Gtk::ToggleButton toggle;
 
 public:
-  ToggleModule(std::string module_name, std::unique_ptr<ComponentInfo> config);
+  ToggleModule(std::string name, std::unique_ptr<ComponentInfo> in_config);
   ToggleModule(ToggleModule &&other) = default;
 
-  ComponentType get_type() const override { return ComponentType::TOGGLE; };
+  auto get_type() const -> ComponentType override {
+    return ComponentType::TOGGLE;
+  };
   ~ToggleModule() override = default;
 };
 #endif

@@ -9,11 +9,13 @@ protected:
   Gtk::Grid container;
 
 public:
-  ContainerModule(std::string module_name,
-                  std::unique_ptr<ContainerInfo> config);
+  ContainerModule(std::string mod_name,
+                  std::unique_ptr<ContainerInfo> cont_config);
   ContainerModule(ContainerModule &&other) = default;
 
-  ComponentType get_type() const override { return ComponentType::CONTAINER; }
+  auto get_type() const -> ComponentType override {
+    return ComponentType::CONTAINER;
+  }
   ~ContainerModule() override = default;
 
   void add_component(std::unique_ptr<Component> comp);

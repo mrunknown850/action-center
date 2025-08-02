@@ -9,10 +9,13 @@ protected:
   Gtk::Scale slider;
 
 public:
-  SliderModule(std::string module_name, std::unique_ptr<ComponentInfo> config);
+  SliderModule(std::string mod_name,
+               std::unique_ptr<ComponentInfo> comp_config);
   SliderModule(SliderModule &&other) = default;
 
-  ComponentType get_type() const override { return ComponentType::SLIDER; };
+  auto get_type() const -> ComponentType override {
+    return ComponentType::SLIDER;
+  };
   ~SliderModule() override = default;
 };
 

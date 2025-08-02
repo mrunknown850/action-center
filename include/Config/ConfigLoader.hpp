@@ -6,6 +6,8 @@
 #include <json/value.h>
 #include <memory>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 struct Margin {
   int x, y;
@@ -21,7 +23,7 @@ struct GridRange {
   int start, end;
 };
 
-enum class MenuPosition;
+enum class MenuPosition : std::int8_t;
 struct ComponentInfo {
   GridRange grid_col;
   GridRange grid_row;
@@ -29,7 +31,8 @@ struct ComponentInfo {
   std::string format;
   std::shared_ptr<Json::Value> raw;
 
-  ComponentInfo(std::shared_ptr<Json::Value> raw) : raw(raw) {}
+  ComponentInfo(std::shared_ptr<Json::Value> json_raw)
+      : raw(std::move(json_raw)) {}
   ComponentInfo(ComponentInfo &&other) = default;
 };
 
@@ -41,13 +44,14 @@ private:
   mutable std::vector<ComponentInfo *> component_ptrs;
 
 public:
-  ContainerInfo(std::shared_ptr<Json::Value> raw) : ComponentInfo(raw) {}
+  ContainerInfo(std::shared_ptr<Json::Value> json_raw)
+      : ComponentInfo(std::move(json_raw)) {}
   ContainerInfo(ContainerInfo &&other) = default;
 
   void add_component(const std::string &id,
                      std::unique_ptr<ComponentInfo> comp);
-  ComponentInfo *get_component_config(const std::string &id) const;
-  const std::vector<ComponentInfo *> &get_component_configs() const;
+  auto get_component_config(const std::string &id) const -> ComponentInfo *;
+  auto get_component_configs() const -> const std::vector<ComponentInfo *> &;
 };
 
 class Config {
@@ -69,19 +73,20 @@ private:
 public:
   Config(const std::string &path);
   Config(Config &&other) = default;
-  Config &operator=(const Config &) = delete;
+  auto operator=(const Config &) -> Config & = delete;
 
   // Window's property getter
-  Margin get_margin() const;
-  Size get_size() const;
-  Gap get_gap() const;
-  MenuPosition get_anchor() const;
+  auto get_margin() const -> Margin;
+  auto get_size() const -> Size;
+  auto get_gap() const -> Gap;
+  auto get_anchor() const -> MenuPosition;
 
   // Component's getter
-  ComponentInfo *get_component_config(const std::string &id) const;
-  const std::vector<ComponentInfo *> &get_component_configs() const;
+  auto get_component_config(const std::string &id) const -> ComponentInfo *;
+  auto get_component_configs() const -> const std::vector<ComponentInfo *> &;
 };
 
-std::pair<int, int> parse_pair(const Json::Value &arr);
+auto parse_pair(const Json::Value &arr) -> std::pair<int, int>;
+auto parse_list(const Json::Value &arr) -> std::vector<std::string>;
 
 #endif // !CONFIG_LOADER_HPP

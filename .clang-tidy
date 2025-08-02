@@ -1,0 +1,21 @@
+Checks: >
+  -*,
+  bugprone-*,
+  misc-*,
+  clang-analyzer-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-magic-numbers,
+  -modernize-use-nodiscard,
+  -modernize-use-trailing-return-type,
+  -readability-braces-around-statements,
+  -readability-redundant-access-specifiers,
+  -readability-redundant-member-init,
+  -readability-redundant-string-init,
+  -readability-identifier-length,
+  -misc-non-private-member-variables-in-classes
+WarningsAsErrors: ''
+# HeaderFilterRegex: '.*'
+# FormatStyle: file

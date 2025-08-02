@@ -1,9 +1,10 @@
 #include "UI/Component.hpp"
+#include "Config/ConfigLoader.hpp"
+#include <memory>
+#include <string>
+#include <utility>
 
-Component::Component(std::string module_name, ComponentType type,
-                     std::unique_ptr<ComponentInfo> config)
-    : module_name(module_name), type(type), config(std::move(config)),
-      widget(nullptr) {}
-Component::Component(Component &&other)
-    : module_name(std::move(other.module_name)), type(other.type),
-      config(std::move(other.config)), widget(std::move(other.widget)) {}
+Component::Component(std::string name, ComponentType comp_type,
+                     std::unique_ptr<ComponentInfo> in_config)
+    : module_name(std::move(name)), type(comp_type),
+      config(std::move(in_config)) {}

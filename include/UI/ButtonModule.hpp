@@ -10,10 +10,13 @@ protected:
 
 public:
   // Override pure functions
-  ButtonModule(std::string module_name, std::unique_ptr<ComponentInfo> config);
-  ButtonModule(ButtonModule &&other) = default;
+  ButtonModule(std::string mod_name,
+               std::unique_ptr<ComponentInfo> comp_config);
+  ButtonModule(ButtonModule &&other) noexcept = default;
 
-  ComponentType get_type() const override { return ComponentType::BUTTON; }
+  auto get_type() const -> ComponentType override {
+    return ComponentType::BUTTON;
+  }
   ~ButtonModule() override = default;
 };
 

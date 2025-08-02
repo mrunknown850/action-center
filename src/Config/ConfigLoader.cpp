@@ -2,12 +2,15 @@
 #include "UI/Window.hpp"
 #include <fstream>
 #include <json/reader.h>
+#include <json/value.h>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
-std::vector<std::string> parse_list(const Json::Value &arr) {
+auto parse_list(const Json::Value &arr) -> std::vector<std::string> {
   std::vector<std::string> res;
   res.reserve(arr.size());
 
@@ -15,18 +18,19 @@ std::vector<std::string> parse_list(const Json::Value &arr) {
     res.push_back(itm.asString());
   return res;
 }
-
-std::pair<int, int> parse_pair(const Json::Value &arr) {
+auto parse_pair(const Json::Value &arr) -> std::pair<int, int> {
   if (!arr.isArray() || arr.size() != 2)
     throw std::runtime_error("Expected array of 2 elements");
   return {arr[0].asInt(), arr[1].asInt()};
 }
 
-ComponentInfo *Config::get_component_config(const std::string &id) const {
+auto Config::get_component_config(const std::string &id) const
+    -> ComponentInfo * {
   return component_lookup.at(id);
 }
 
-const std::vector<ComponentInfo *> &Config::get_component_configs() const {
+auto Config::get_component_configs() const
+    -> const std::vector<ComponentInfo *> & {
   if (component_ptrs.empty()) {
     component_ptrs.reserve(component_ptrs.size());
     for (const auto &comp : components) {
@@ -36,10 +40,10 @@ const std::vector<ComponentInfo *> &Config::get_component_configs() const {
   return component_ptrs;
 }
 
-Margin Config::get_margin() const { return margin; }
-Size Config::get_size() const { return size; }
-Gap Config::get_gap() const { return gap; }
-MenuPosition Config::get_anchor() const { return anchor; }
+auto Config::get_margin() const -> Margin { return margin; }
+auto Config::get_size() const -> Size { return size; }
+auto Config::get_gap() const -> Gap { return gap; }
+auto Config::get_anchor() const -> MenuPosition { return anchor; }
 
 Config::Config(const std::string &path) {
   // Setup stream
@@ -48,7 +52,7 @@ Config::Config(const std::string &path) {
     throw std::runtime_error("Failed to open config: " + path);
 
   // Parse config
-  Json::CharReaderBuilder builder;
+  const Json::CharReaderBuilder builder;
   std::string errs;
   if (!Json::parseFromStream(builder, file_inp, &root, &errs))
     throw std::runtime_error("Failed to parse: " + errs);
@@ -89,11 +93,12 @@ void Config::parse_config() {
   parse_components();
 }
 
-std::unique_ptr<ContainerInfo>
-parse_container(const Json::Value &root, const std::string &container_id) {
+namespace {
+auto parse_container(const Json::Value &root, const std::string &container_id)
+    -> std::unique_ptr<ContainerInfo> {
   auto container = std::make_unique<ContainerInfo>(
       std::make_shared<Json::Value>(root[container_id]));
-  auto container_raw = root[container_id];
+  const auto &container_raw = root[container_id];
 
   container->module_id = container_id;
   container->format = container_raw["format"].asString();
@@ -107,7 +112,7 @@ parse_container(const Json::Value &root, const std::string &container_id) {
   auto sub_mods = parse_list(container_raw["modules"]);
   for (const auto &id : sub_mods) {
     const Json::Value &submod_raw = root[id];
-    std::string type = submod_raw["type"].asString();
+    const std::string type = submod_raw["type"].asString();
     if (type == "CONTAINER") {
       auto sub_container = parse_container(root, id);
       container->add_component(id, std::move(sub_container));
@@ -127,6 +132,7 @@ parse_container(const Json::Value &root, const std::string &container_id) {
   }
   return container;
 }
+} // namespace
 
 void ContainerInfo::add_component(const std::string &id,
                                   std::unique_ptr<ComponentInfo> comp) {

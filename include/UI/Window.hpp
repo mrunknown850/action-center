@@ -1,12 +1,13 @@
 #ifndef WINDOW_LOADER_HPP
 #define WINDOW_LOADER_HPP
 
+#include "Config/ConfigLoader.hpp"
 #include "UI/Component.hpp"
 #include <gtkmm/grid.h>
 #include <gtkmm/window.h>
 #include <memory>
 
-enum class MenuPosition {
+enum class MenuPosition : std::int8_t {
   TOP,
   LEFT,
   RIGHT,
@@ -21,15 +22,14 @@ class Window : public Gtk::Window {
 private:
   Gtk::Grid root;
   MenuPosition anchor;
-  int xm, ym, width, height, col_gap, row_gap;
-
-  Window *parent;
+  Margin margin;
+  Size size;
+  Gap gap;
 
   void setup_anchoring();
 
 public:
-  Window(MenuPosition anchor, int x_margin, int y_margin, int width, int height,
-         int col_gap, int row_gap);
+  Window(MenuPosition anchor, Margin, Size, Gap);
   ~Window() override = default;
 
   void add_component(std::unique_ptr<Component> comp);

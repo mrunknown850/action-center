@@ -6,6 +6,7 @@ file(GLOB_RECURSE APP_SRC
 )
 
 
+set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_ARGS})
 add_executable(action-center ${APP_SRC})
 
 # Linker
